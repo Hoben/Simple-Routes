@@ -1,4 +1,4 @@
-Simples PHP Routes
+Simple PHP Routes
 =========================
 [![Author](https://img.shields.io/badge/author-hoben-blue.svg)](https://github.com/Hoben)
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D5.4-green.svg)](https://github.com/Hoben)

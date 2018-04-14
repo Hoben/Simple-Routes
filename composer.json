@@ -1,7 +1,7 @@
 {
     "name": "hoben/simple-routes",
     "description": "Simple routing package for PHP.",
-    "keywords": ["routing", "controller", "mvc", "beginner", "simple"],
+    "keywords": ["routing", "routes", "controller", "mvc", "beginner-friendly", "light-weight"],
     "license": "MIT",
     "authors": [
         {
