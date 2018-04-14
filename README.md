@@ -1,7 +1,8 @@
-Composer Library Template
+Simples PHP Routes
 =========================
-
-If you are trying to create a new PHP Composer library, whether it will be going to submitted to packagist.org or just in your Github account, this template of files will surely help you make the process a lot easier and faster.
+[![Author](https://img.shields.io/badge/author-hoben-blue.svg)](https://github.com/Hoben)
+[![PHP Version](https://img.shields.io/badge/php-%3E%3D5.4-green.svg)](https://github.com/Hoben)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
 Install
 --------
