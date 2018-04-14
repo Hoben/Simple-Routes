@@ -66,7 +66,7 @@ $router->setControllersPath('src/controllers/'); // Example: for controllers in 
 $router->match();
 ```
 
-### For beginner: server configuration
+### Bonus: How to redirect all url to index.php
 
 Create a simple .htaccess file on your root directory if you're using Apache with mod_rewrite enabled.
 
@@ -81,8 +81,8 @@ If you're using nginx, setup your server section as following:
 ```nginx
 server {
 	listen 80;
-	server_name mydevsite.dev;
-	root /var/www/mydevsite/public;
+	server_name mywebsite.dev;
+	root /var/www/mywebsite/public;
 
 	index index.php;
 
