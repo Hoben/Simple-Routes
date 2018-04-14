@@ -3,6 +3,7 @@ Simples PHP Routes
 [![Author](https://img.shields.io/badge/author-hoben-blue.svg)](https://github.com/Hoben)
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D5.4-green.svg)](https://github.com/Hoben)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+Simple and easy-to-use router built for beginners and light-weight projects.
 
 Install
 --------
