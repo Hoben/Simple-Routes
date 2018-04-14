@@ -1,0 +1,22 @@
+{
+    "name": "hoben/simple-router",
+    "description": "Simple routing package for PHP.",
+    "keywords": ["routing", "controller", "mvc", "beginner", "simple"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Habib Bargaoui",
+            "email": "hobben@gmail.com"
+        }
+    ],
+    "type": "package",
+    "require": {
+		"php": ">=5.4",
+        "symfony/yaml": "2.8.38"
+    },
+	"autoload": {
+        "psr-4": {
+            "Hoben\\SimpleRoutes\\": "src/"
+        }
+    }
+}

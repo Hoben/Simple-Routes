@@ -1,0 +1,15 @@
+"Dashboard":
+  url: /
+  controller: indexController
+  action: index
+  method: GET
+
+"Test Page":
+  url: /
+  controller: indexController
+  action: index2
+  method: POST
+
+"default":
+  controller: indexController
+  action: index3
