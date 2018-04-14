@@ -18,13 +18,50 @@ symfony/yaml >= 2.8
 Features
 --------
 
-* PSR-4 autoloading compliant structure
-* Unit-Testing with PHPUnit
-* Comprehensive Guides and tutorial
-* Easy to use to any framework or even a plain php file
+* Create routes defined in yaml files
+* You can also add routes in code with the function add of the class Router.php
+* You can filter routes by methods ( GET, POST, PUT ,DELETE,...)
 
+### Adding routes with yaml file (routes.yaml)
+```yaml
+"Dashboard":
+  url: /
+  controller: indexController
+  action: index
+  method: GET
 
-I encourage that you put more information on this readme file instead of leaving it as is. See [http://www.darwinbiler.com/designing-and-making-the-readme-file-for-your-github-repository/](How to make a README file) for more info.
+"Test Page":
+  url: /
+  controller: indexController
+  action: index2
+  method: POST
+
+"default":
+  controller: indexController
+  action: index3
+```
+```php
+$router = new Router();
+$router->setbasePath('my-app/'); // Example: for www.localhost/my-app
+$router->controllersPath('src/controllers/'); // Example: for controllers in www.localhost/my-app/src/controllers
+$this->configPath('yaml-file-path/routes.yaml') // The yaml file path
+$router->match();
+```
+### Adding routes with PHP code
+```php
+use Hoben\SimpleRoutes\Router;
+
+$router = new Router();
+
+$route->add('/products', 'ProductController', 'getProducts', 'GET');
+$route->add('/product', 'ProductController', 'getProduct', 'GET');
+$route->add('/product', 'ProductController', 'addProduct', 'POST');
+$route->add('/product', 'ProductController', 'updateProduct', 'PUT');
+
+$router->setbasePath('my-app/'); // Example: for www.localhost/my-app
+$router->controllersPath('src/controllers/'); // Example: for controllers in www.localhost/my-app/src/controllers
+$router->match();
+```
 
 License
 --------
