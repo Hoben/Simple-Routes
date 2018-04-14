@@ -3,6 +3,18 @@ Composer Library Template
 
 If you are trying to create a new PHP Composer library, whether it will be going to submitted to packagist.org or just in your Github account, this template of files will surely help you make the process a lot easier and faster.
 
+Install
+--------
+Via Composer
+``` bash
+$ composer require hoben/simple-routes
+```
+
+Requirements
+--------
+PHP >= 5.4
+symfony/yaml >= 2.8
+
 Features
 --------
 
@@ -13,3 +25,8 @@ Features
 
 
 I encourage that you put more information on this readme file instead of leaving it as is. See [http://www.darwinbiler.com/designing-and-making-the-readme-file-for-your-github-repository/](How to make a README file) for more info.
+
+License
+--------
+The MIT License (MIT). Please see [License File](https://github.com/hoben/simple-routes/master/LICENSE.md) for more information.
+
