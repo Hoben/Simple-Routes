@@ -45,9 +45,9 @@ Features
 ```
 ```php5
 $router = new Router();
-$router->setbasePath('my-app/'); // Example: for www.localhost/my-app
-$router->controllersPath('src/controllers/'); // Example: for controllers in www.localhost/my-app/src/controllers
-$router->configPath('yaml-file-path/routes.yaml') // The yaml file path
+$router->setBasePath('my-app/'); // Example: for www.localhost/my-app
+$router->setControllersPath('src/controllers/'); // Example: for controllers in www.localhost/my-app/src/controllers
+$router->setConfigPath('yaml-file-path/routes.yaml') // The yaml file path
 $router->match();
 ```
 ### Adding routes with PHP code
@@ -61,8 +61,8 @@ $route->add('/product', 'ProductController', 'getProduct', 'GET');
 $route->add('/product', 'ProductController', 'addProduct', 'POST');
 $route->add('/product', 'ProductController', 'updateProduct', 'PUT');
 
-$router->setbasePath('my-app/'); // Example: for www.localhost/my-app
-$router->controllersPath('src/controllers/'); // Example: for controllers in www.localhost/my-app/src/controllers
+$router->setBasePath('my-app/'); // Example: for www.localhost/my-app
+$router->setControllersPath('src/controllers/'); // Example: for controllers in www.localhost/my-app/src/controllers
 $router->match();
 ```
 
