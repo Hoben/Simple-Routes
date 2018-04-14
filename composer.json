@@ -1,5 +1,5 @@
 {
-    "name": "hoben/simple-router",
+    "name": "hoben/simple-routes",
     "description": "Simple routing package for PHP.",
     "keywords": ["routing", "controller", "mvc", "beginner", "simple"],
     "license": "MIT",
