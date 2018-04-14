@@ -66,6 +66,43 @@ $router->setControllersPath('src/controllers/'); // Example: for controllers in 
 $router->match();
 ```
 
+### For beginner: server configuration
+
+Create a simple .htaccess file on your root directory if you're using Apache with mod_rewrite enabled.
+
+```apache
+Options +FollowSymLinks
+RewriteEngine On
+RewriteRule ^(.*)$ index.php [NC,L]
+```
+
+If you're using nginx, setup your server section as following:
+
+```nginx
+server {
+	listen 80;
+	server_name mydevsite.dev;
+	root /var/www/mydevsite/public;
+
+	index index.php;
+
+	location / {
+		try_files $uri $uri/ /index.php?$query_string;
+	}
+
+	location ~ \.php$ {
+		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+		# NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
+
+		# With php5-fpm:
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
+		fastcgi_index index.php;
+		include fastcgi.conf;
+		fastcgi_intercept_errors on;
+	}
+}
+```
+
 License
 --------
 The MIT License (MIT). Please see [License File](https://github.com/hoben/simple-routes/master/LICENSE.md) for more information.
