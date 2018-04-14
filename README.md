@@ -16,6 +16,7 @@ $ composer require hoben/simple-routes
 Requirements
 --------
 * PHP >= 5.4
+* Symfony/yaml >= 2.8.38
 
 Features
 --------
@@ -35,22 +36,22 @@ Features
 "Test Page":
   url: /
   controller: indexController
-  action: index2
+  action: showTest
   method: POST
 
 "default":
-  controller: indexController
-  action: index3
+  controller: defaultController
+  action: show404
 ```
-```php
+```php5
 $router = new Router();
 $router->setbasePath('my-app/'); // Example: for www.localhost/my-app
 $router->controllersPath('src/controllers/'); // Example: for controllers in www.localhost/my-app/src/controllers
-$this->configPath('yaml-file-path/routes.yaml') // The yaml file path
+$router->configPath('yaml-file-path/routes.yaml') // The yaml file path
 $router->match();
 ```
 ### Adding routes with PHP code
-```php
+```php5
 use Hoben\SimpleRoutes\Router;
 
 $router = new Router();
