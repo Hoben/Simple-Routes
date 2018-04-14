@@ -66,7 +66,7 @@ $router->setControllersPath('src/controllers/'); // Example: for controllers in 
 $router->match();
 ```
 
-### Bonus: How to redirect all url to index.php
+### Bonus: How to redirect all urls to index.php
 
 Create a simple .htaccess file on your root directory if you're using Apache with mod_rewrite enabled.
 
