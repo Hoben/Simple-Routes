@@ -6,6 +6,8 @@ Simple PHP Routes
 
 Simple and easy-to-use router built for beginners and light-weight projects.
 
+This package is compliant with [PSR-2]
+
 Install
 --------
 Via Composer
