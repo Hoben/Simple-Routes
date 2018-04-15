@@ -17,7 +17,7 @@ $ composer require hoben/simple-routes
 
 Requirements
 --------
-* PHP ^5.5.9|>=7.0.8
+* PHP ^5.5.9 | >=7.0.8
 * Symfony/yaml: ^3.4
 
 Features
