@@ -1,6 +1,9 @@
 <?php
 namespace Hoben\SimpleRoutes;
 
+use Hoben\SimpleRoutes\Route;
+use Symfony\Component\Yaml\Yaml;
+
 /**
  *  Router class
  *
@@ -13,129 +16,44 @@ namespace Hoben\SimpleRoutes;
  */
 class Router
 {
-    /**
-     * Creates objet Router with the right params.
-     *
-     * Used for setting default locations for the base folder, the controllers directory and the yaml routes file.
-     * Default locations are:
-     *          $this->basePath = '';
-     *          $this->controllersPath = 'controllers/';
-     *          $this->configPath = './routes.yaml';
-     */
-    private $_routes = array();
-    private $_basePath;
-    private $_configPath;
-    private $_controllersPath;
+    private $routes;
 
-    public function __construct($basePath, $controllersPath, $configPath)
+    public function __construct()
     {
-
-    }
-    /**
-     * Sets the directory for the base folder where the app is installed
-     *
-     * @param string $basePath The base folder path
-     */
-    public function setconfigPath($configPath)
-    {
-        $this->configPath = $configPath;
+        $this->routes = array();
     }
 
-    /**
-     * Sets the directory for the base folder where the app is installed
-     *
-     * @param string $basePath The base folder path
-     */
-    public function setBasePath($basePath)
+    private static function getRequestURL()
     {
-        $this->basePath = $basePath;
-    }
-
-    /**
-     * Sets the directory for the controlles path
-     *
-     * @param string $controllersPath The controllers folder path
-     */
-    public function setControllersPath($controllersPath)
-    {
-        $this->controllersPath = $controllersPath;
-    }
-
-    /**
-     * Sets the directory for the controlles path
-     *
-     * @return string The URL visited with replacing the base folder of your app
-     * to match with the routes defined in your yaml file.
-     */
-    private function getCurrentRequest()
-    {
-        $requestMethod = (isset($_POST['_method'])
-            && ($_method = strtoupper($_POST['_method']))
-            && in_array($_method, array('PUT', 'DELETE')))
-        ? $_method : $_SERVER['REQUEST_METHOD'];
-
         $requestUrl = $_SERVER['REQUEST_URI'];
 
         // strip GET variables from URL
         if (($pos = strpos($requestUrl, '?')) !== false) {
             $requestUrl = substr($requestUrl, 0, $pos);
         }
-        return $this->match($requestUrl, $requestMethod);
+        return $requestUrl;
     }
 
-    /**
-     * Match Method
-     *
-     * Matches the configuration saved in the yaml file with the current url and the right method
-     * If no match was found and the route 'default' is defined, the controller responsable for the 'default'
-     * route is called.
-     * Example for default declaration in yaml routes.yaml
-     * "default":
-     *      controller: 404Controller
-     *      action: index
-     * this will call (new 404Controller())->index()
-     */
-    public function add($url, $controller, $action, $method)
+    private static function getRequestMethod()
     {
-        $route = array('url' => $url,
-            'controller' => $controller,
-            'action' => $action,
-            'method' => strtoupper($method));
-        array_push($this->yamlRoutes, $route);
+        $requestMethod = (isset($_POST['_method'])
+            && ($_method = strtoupper($_POST['_method']))
+            && in_array($_method, array('PUT', 'DELETE')))
+        ? $_method : $_SERVER['REQUEST_METHOD'];
+
+        return $requestMethod;
     }
-    /**
-     * Match Method
-     *
-     * Matches the configuration saved in the yaml file with the current url and the right method
-     * If no match was found and the route 'default' is defined, the controller responsable for the 'default'
-     * route is called.
-     * Example for default declaration in yaml routes.yaml
-     * "default":
-     *      controller: 404Controller
-     *      action: index
-     * this will call (new 404Controller())->index()
-     */
+
     public function match()
     {
-        $this->getCurrentRequest();
+        $this->matchRequest(Router::getRequestURL,
+            Router::getRequestMethod);
     }
 
     private function matchRequest($requestUrl, $requestMethod)
     {
-        $routes = $this->yamlRoutes;
-        if (!file_exists($this->configPath)) {
-            return false;
-        }
+        $routes = $this->routes;
         foreach ($routes as $yamlRoute) {
-            if (!isset($yamlRoute['url'])) {
-                continue;
-            }
-            if (!isset($yamlRoute['controller']) || !isset($yamlRoute['action'])) {
-                continue;
-            }
-            if ($yamlRoute['url'] != $requestUrl) {
-                continue;
-            }
             if (!isset($yamlRoute['method'])) {
                 include_once $this->controllersPath . $yamlRoute['controller'] . '.php';
                 $controller = new $yamlRoute['controller']();
@@ -157,5 +75,28 @@ class Router
             $controller = new $yamlRoute['controller']();
             $controller->{$yamlRoute['action']}();
         }
+    }
+
+    public static function loadFromFile($yamlFile)
+    {
+        try {
+            $yamlRoutes = Yaml::parse(file_get_contents($yamlFile));
+        } catch (\Exception $e) {
+            echo 'Message %s' . $e->getMessage();
+        }
+        Route::parseYamlRoutes($yamlRoutes);
+    }
+
+    private function parseYamlRoutes($yamlRoutes)
+    {
+        $basePath = (!isset($yamlRoutes['basePath'])) ? '' : $yamlRoutes['basePath'];
+        $controllersPath = (!isset($yamlRoutes['controllersPath'])) ? 'controllers' : $yamlRoutes['controllersPath'];
+        foreach ($yamlRoute as $yamlRoutes) {
+            $route = Router::validateYamlRoute($yamlRoute, $basePath, $controllersPath);
+            if ($route != false) {
+                array_push($this->routes, $route);
+            }
+        }
+        return $routes;
     }
 }

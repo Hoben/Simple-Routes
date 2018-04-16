@@ -105,4 +105,33 @@ class Route
     {
         $this->_parameters = $parameters;
     }
+    private static function validateYamlRoute($yamlRoute, $basePath, $controllersPath)
+    {
+        if (!isset($yamlRoute['url'])) {
+            return false;
+        }
+
+        if (!isset($yamlRoute['controller'])
+            && !isset($yamlRoute['static'])) {
+            return false;
+        }
+
+        if (isset($yamlRoute['controller'])
+            && isset($yamlRoute['static'])) {
+            return false;
+        }
+
+        if (isset($yamlRoute['controller'])
+            && !isset($yamlRoute['action'])) {
+            return false;
+        }
+
+        if (isset($yamlRoute['method'])
+            && (!in_array(strtoupper($yamlRoute['method']),
+                array('GET', 'POST', 'PUT', 'DELETE')))) {
+            return false;
+        }
+        return new Route($yamlRoute['url'],)
+
+    }
 }
