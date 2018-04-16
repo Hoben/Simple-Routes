@@ -1,6 +1,5 @@
-<?php namespace Hoben\SimpleRoutes;
-
-use Symfony\Component\Yaml\Yaml;
+<?php
+namespace Hoben\SimpleRoutes;
 
 /**
  *  Router class
@@ -23,14 +22,23 @@ class Router
      *          $this->controllersPath = 'controllers/';
      *          $this->configPath = './routes.yaml';
      */
-    public function __construct()
+    private $_routes = array();
+    private $_basePath;
+    private $_configPath;
+    private $_controllersPath;
+
+    public function __construct($basePath, $controllersPath, $configPath)
     {
-        $this->basePath = '';
-        $this->controllersPath = 'controllers/';
-        $this->configPath = './routes.yaml';
-        if (file_exists($this->configPath)) {
-            $this->yamlRoutes = Yaml::parse(file_get_contents($this->configPath));
-        }
+
+    }
+    /**
+     * Sets the directory for the base folder where the app is installed
+     *
+     * @param string $basePath The base folder path
+     */
+    public function setconfigPath($configPath)
+    {
+        $this->configPath = $configPath;
     }
 
     /**
@@ -41,16 +49,6 @@ class Router
     public function setBasePath($basePath)
     {
         $this->basePath = $basePath;
-    }
-
-    /**
-     * Sets the directory for the routes yaml file
-     *
-     * @param string $configPath The yaml file containing routes path
-     */
-    public function setConfigPath($configPath)
-    {
-        $this->configPath = $configPath;
     }
 
     /**
@@ -69,25 +67,20 @@ class Router
      * @return string The URL visited with replacing the base folder of your app
      * to match with the routes defined in your yaml file.
      */
-    private function getURL()
+    private function getCurrentRequest()
     {
-        if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) {
-            $protocol = "https://";
-        } else {
-            $protocol = "http://";
-        }
-        $url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        return '/' . trim(str_replace($this->basePath, "", parse_url($url)['path']), "/");
-    }
+        $requestMethod = (isset($_POST['_method'])
+            && ($_method = strtoupper($_POST['_method']))
+            && in_array($_method, array('PUT', 'DELETE')))
+        ? $_method : $_SERVER['REQUEST_METHOD'];
 
-    /**
-     * Sets the directory for the controlles path
-     *
-     * @return string The request method as 'GET','POST','PUT','DELETE'..
-     */
-    private static function geURLtMethod()
-    {
-        return $_SERVER['REQUEST_METHOD'];
+        $requestUrl = $_SERVER['REQUEST_URI'];
+
+        // strip GET variables from URL
+        if (($pos = strpos($requestUrl, '?')) !== false) {
+            $requestUrl = substr($requestUrl, 0, $pos);
+        }
+        return $this->match($requestUrl, $requestMethod);
     }
 
     /**
@@ -124,8 +117,11 @@ class Router
      */
     public function match()
     {
-        $url = $this->getURL();
-        $method = Router::geURLtMethod();
+        $this->getCurrentRequest();
+    }
+
+    private function matchRequest($requestUrl, $requestMethod)
+    {
         $routes = $this->yamlRoutes;
         if (!file_exists($this->configPath)) {
             return false;
@@ -137,7 +133,7 @@ class Router
             if (!isset($yamlRoute['controller']) || !isset($yamlRoute['action'])) {
                 continue;
             }
-            if ($yamlRoute['url'] != $url) {
+            if ($yamlRoute['url'] != $requestUrl) {
                 continue;
             }
             if (!isset($yamlRoute['method'])) {
@@ -145,7 +141,7 @@ class Router
                 $controller = new $yamlRoute['controller']();
                 $controller->{$yamlRoute['action']}();
                 return true;
-            } elseif (($yamlRoute['method'] == $method)) {
+            } elseif (($yamlRoute['method'] == $requestMethod)) {
                 include_once $this->controllersPath . $yamlRoute['controller'] . '.php';
                 $controller = new $yamlRoute['controller']();
                 $controller->{$yamlRoute['action']}();

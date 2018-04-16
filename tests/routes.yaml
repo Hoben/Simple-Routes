@@ -1,0 +1,11 @@
+"basePath": "simple-routes"
+
+"Dashboard":
+  url: /
+  controller: indexTestController
+  action: index
+  method: GET
+
+"default":
+  controller: indexTestController
+  action: notfound
