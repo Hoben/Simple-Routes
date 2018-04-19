@@ -1,0 +1,12 @@
+"basePath" : "router/tests/"
+"controllersPath" : "controllers/"
+
+"Dashboard":
+  url: /
+  controller: indexTestController
+  action: index
+  method: GET
+
+"*":
+  url : any
+  static: tt.php

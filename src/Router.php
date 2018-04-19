@@ -46,57 +46,79 @@ class Router
 
     public function match()
     {
-        $this->matchRequest(Router::getRequestURL,
-            Router::getRequestMethod);
+        $this->matchRequest(Router::getRequestURL(),
+            Router::getRequestMethod());
     }
 
     private function matchRequest($requestUrl, $requestMethod)
     {
         $routes = $this->routes;
-        foreach ($routes as $yamlRoute) {
-            if (!isset($yamlRoute['method'])) {
-                include_once $this->controllersPath . $yamlRoute['controller'] . '.php';
-                $controller = new $yamlRoute['controller']();
-                $controller->{$yamlRoute['action']}();
-                return true;
-            } elseif (($yamlRoute['method'] == $requestMethod)) {
-                include_once $this->controllersPath . $yamlRoute['controller'] . '.php';
-                $controller = new $yamlRoute['controller']();
-                $controller->{$yamlRoute['action']}();
-                return true;
+        foreach ($routes as $route) {
+            if ($route->get_url() == 'any') {
+                $defaultRoute = $route;
+                continue;
             }
+            if (($route->get_url() == $requestUrl) && ($route->get_method() == $requestMethod)) {
+                $this->matchRoute($route);
+            }
+
         }
-        if (!isset($routes['default'])) {
+        if (!isset($defaultRoute)) {
             return false;
         }
+        $this->matchRoute($defaultRoute);
+    }
 
-        if (isset($routes['default']['controller']) && isset($routes['default']['action'])) {
-            include_once $this->controllersPath . $yamlRoute['controller'] . '.php';
-            $controller = new $yamlRoute['controller']();
-            $controller->{$yamlRoute['action']}();
+    private function matchRoute($route)
+    {
+        var_dump($route);
+        if ($route->get_isStatic()) {
+            include $route->get_static() . '.php';
+        } else {
+            $controller_name = $route->get_controller();
+            $controller = new $controller_name();
+            $controller->{$route->get_action()}();
         }
     }
 
-    public static function loadFromFile($yamlFile)
+    public function loadFromFolder($yamlFolder)
     {
         try {
-            $yamlRoutes = Yaml::parse(file_get_contents($yamlFile));
+            if (is_dir($yamlFolder)) {
+                foreach (glob("*.yml") as $yamlFile) {
+                    $yamlRoutes = Yaml::parse(file_get_contents($yamlFile));
+                    Route::parseYamlRoutes($yamlRoutes);
+                }
+            }
         } catch (\Exception $e) {
             echo 'Message %s' . $e->getMessage();
         }
-        Route::parseYamlRoutes($yamlRoutes);
+    }
+
+    public function loadFromFile($yamlFile)
+    {
+        try {
+            if (file_exists($yamlFile)) {
+                $yamlRoutes = Yaml::parse(file_get_contents($yamlFile));
+                Router::parseYamlRoutes($yamlRoutes);
+            }
+        } catch (\Exception $e) {
+            echo 'Message %s' . $e->getMessage();
+        }
+
     }
 
     private function parseYamlRoutes($yamlRoutes)
     {
         $basePath = (!isset($yamlRoutes['basePath'])) ? '' : $yamlRoutes['basePath'];
         $controllersPath = (!isset($yamlRoutes['controllersPath'])) ? 'controllers' : $yamlRoutes['controllersPath'];
-        foreach ($yamlRoute as $yamlRoutes) {
-            $route = Router::validateYamlRoute($yamlRoute, $basePath, $controllersPath);
+        foreach ($yamlRoutes as $yamlRoute) {
+            $route = Route::validateYamlRoute($yamlRoute, $basePath, $controllersPath);
             if ($route != false) {
                 array_push($this->routes, $route);
             }
         }
-        return $routes;
+        var_dump($this->routes);
+        return $route;
     }
 }

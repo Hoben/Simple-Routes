@@ -1,7 +1,6 @@
 <?php
 namespace Hoben\SimpleRoutes;
 
-use Hoben\SimpleRoutes\Route;
 use Symfony\Component\Yaml\Yaml;
 
 class RoutesParser
@@ -19,7 +18,6 @@ class RoutesParser
     private static function parseRoutes($yamlRoutes)
     {
         $routes = arary();
-        $collection = new RouteCollection();
         foreach ($yamlRoute as $yamlRoutes) {
             $route = Config::validateRoute($yamlRoute);
             if ($route != false) {
@@ -55,7 +53,6 @@ class RoutesParser
                 array('GET', 'POST', 'PUT', 'DELETE')))) {
             return false;
         }
-        return new Route($yamlRoute['url'],)
 
     }
 }

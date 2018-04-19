@@ -7,6 +7,5 @@ require_once '../vendor/autoload.php';
 use Hoben\SimpleRoutes\Router;
 
 $router = new Router();
-$router->setBasePath('simple-routes/tests');
-$router->setControllersPath('controllers/');
+$router->loadFromFile('routes.yml');
 $router->match();

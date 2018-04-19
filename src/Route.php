@@ -3,89 +3,149 @@ namespace Hoben\SimpleRoutes;
 
 class Route
 {
-    /**
-     * URL of this Route
-     * @var string
-     */
     private $_url;
+    private $_isStatic;
+    private $_static;
+    private $_controller;
+    private $_action;
+    private $_method;
+
     /**
-     * Accepted HTTP methods for this route
-     * @var array
+     * Get the value of _url
      */
-    private $_methods = array('GET', 'POST', 'PUT', 'DELETE');
-    /**
-     * Target for this route, can be anything.
-     * @var mixed
-     */
-    private $_target;
-    /**
-     * The name of this route, used for reversed routing
-     * @var string
-     */
-    private $_name;
-    /**
-     * Custom parameter filters for this route
-     * @var array
-     */
-    private $_filters = array();
-    /**
-     * Array containing parameters passed through request URL
-     * @var array
-     */
-    private $_parameters = array();
-    /**
-     * @param $resource
-     * @param array $config
-     */
-    public function __construct($resource, array $config)
-    {
-        $this->_url = $resource;
-        $this->_config = $config;
-        $this->_methods = isset($config['methods']) ? $config['methods'] : array();
-        $this->_target = isset($config['target']) ? $config['target'] : null;
-    }
-    public function getUrl()
+    public function get_url()
     {
         return $this->_url;
     }
-    public function setUrl($url)
-    {
-        $url = (string) $url;
-        // make sure that the URL is suffixed with a forward slash
-        if (substr($url, -1) !== '/') {
-            $url .= '/';
-        }
 
-        $this->_url = $url;
-    }
-    public function getTarget()
+    /**
+     * Set the value of _url
+     *
+     * @return  self
+     */
+    public function set_url($_url)
     {
-        return $this->_target;
+        $this->_url = $_url;
+
+        return $this;
     }
-    public function setTarget($target)
+
+    /**
+     * Get the value of _isStatic
+     */
+    public function get_isStatic()
     {
-        $this->_target = $target;
+        return $this->_isStatic;
     }
-    public function getMethods()
+
+    /**
+     * Set the value of _isStatic
+     *
+     * @return  self
+     */
+    public function set_isStatic($_isStatic)
     {
-        return $this->_methods;
+        $this->_isStatic = $_isStatic;
+
+        return $this;
     }
-    public function setMethods(array $methods)
+
+    /**
+     * Get the value of _controller
+     */
+    public function get_controller()
     {
-        $this->_methods = $methods;
+        return $this->_controller;
     }
-    public function getName()
+
+    /**
+     * Set the value of _controller
+     *
+     * @return  self
+     */
+    public function set_controller($_controller)
     {
-        return $this->_name;
+        $this->_controller = $_controller;
+
+        return $this;
     }
-    public function setName($name)
+
+    /**
+     * Get the value of _action
+     */
+    public function get_action()
     {
-        $this->_name = (string) $name;
+        return $this->_action;
     }
-    public function setFilters(array $filters)
+
+    /**
+     * Set the value of _action
+     *
+     * @return  self
+     */
+    public function set_action($_action)
     {
-        $this->_filters = $filters;
+        $this->_action = $_action;
+
+        return $this;
     }
+
+    /**
+     * Get the value of _method
+     */
+    public function get_method()
+    {
+        return $this->_method;
+    }
+
+    /**
+     * Set the value of _method
+     *
+     * @return  self
+     */
+    public function set_method($_method)
+    {
+        $this->_method = $_method;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of _static
+     */
+    public function get_static()
+    {
+        return $this->_static;
+    }
+
+    /**
+     * Set the value of _static
+     *
+     * @return  self
+     */
+    public function set_static($_static)
+    {
+        $this->_static = $_static;
+
+        return $this;
+    }
+
+    public function __construct($url, $controller, $action, $method, $static, $isStatic)
+    {
+        if ($isStatic) {
+            $this->_isStatic = $isStatic;
+            $this->_url = $url;
+            $this->_static = $static;
+        } else {
+            $this->_isStatic = !$isStatic;
+            $this->_url = $url;
+            $this->_controller = $controller;
+            $this->_action = $action;
+            $this->_url = $url;
+            $this->_method = $method;
+        }
+    }
+
     public function getRegex()
     {
         return preg_replace_callback("/:(\w+)/", array(&$this, 'substituteFilter'), $this->_url);
@@ -97,15 +157,8 @@ class Route
         }
         return "([\w-]+)";
     }
-    public function getParameters()
-    {
-        return $this->_parameters;
-    }
-    public function setParameters(array $parameters)
-    {
-        $this->_parameters = $parameters;
-    }
-    private static function validateYamlRoute($yamlRoute, $basePath, $controllersPath)
+
+    public static function validateYamlRoute($yamlRoute, $basePath, $controllersPath)
     {
         if (!isset($yamlRoute['url'])) {
             return false;
@@ -131,7 +184,31 @@ class Route
                 array('GET', 'POST', 'PUT', 'DELETE')))) {
             return false;
         }
-        return new Route($yamlRoute['url'],)
+
+        if (substr($yamlRoute['url'], -1) !== '/') {
+            $yamlRoute['url'] .= '/';
+        }
+
+        if (!isset($yamlRoute['static'])) {
+            $isStatic = false;
+            $yamlRoute['static'] = '';
+        } else {
+            $isStatic = true;
+        }
+
+        if (!isset($yamlRoute['method'])) {
+            $yamlRoute['method'] = '';
+        }
+
+        return new Route(
+            $basePath . $yamlRoute['url'],
+            $basePath . $controllersPath . $yamlRoute['controller'],
+            $yamlRoute['action'],
+            $yamlRoute['method'],
+            $basePath . $yamlRoute['static'],
+            $isStatic
+        );
 
     }
+
 }
